@@ -1,6 +1,7 @@
 interface CallSession {
   raw?: any;
   former?: Promise<Response>;
+  trace: Response[];
 }
 
 export interface CallOpts {
@@ -10,7 +11,7 @@ export interface CallOpts {
 
 export interface CallChain {
   call: (endpoint: string, opts?: CallOpts) => CallChain;
-  done: () => Promise<Response>;
+  done: () => Promise<Response[]>;
 }
 
 interface ClientOpts {
@@ -35,29 +36,61 @@ export class MLDSClient {
     endpoint: string,
     opts?: CallOpts
   ): CallChain => {
+    let nextCall: Promise<any>;
     if (session.former) {
-      session.former.then(res =>
-        this.call(endpoint, { ...opts, session: { ...session } })
-      );
+      nextCall = session.former
+        .then(response =>
+          response
+            .clone()
+            .json()
+            .catch(() => response.clone().text())
+        )
+        .then(response => {
+          session.trace.push(response);
+          return this.call(endpoint, {
+            ...opts,
+            session
+          });
+        });
     } else {
-      session.former = this.call(endpoint, {
-        ...opts,
-        session: { ...session }
-      });
+      nextCall = Promise.resolve(
+        this.call(endpoint, {
+          ...opts,
+          session
+        })
+      );
     }
     // allow chaining
+    const nextSession = { ...session, former: nextCall };
     return {
-      call: this.callWithSession.bind(session),
-      done: () => session.former
+      call: (endpoint: string, opts?: CallOpts) =>
+        this.callWithSession(nextSession, endpoint, opts),
+      done: () =>
+        nextSession.former
+          .then(response =>
+            response
+              .clone()
+              .json()
+              .catch(() => response.clone().text())
+          )
+          .then(res => {
+            return [...session.trace, res];
+          })
     };
   };
 
   startSession = (): {
     call: (endpoint: string, opts?: CallOpts) => CallChain;
   } => {
-    const session = {};
     return {
-      call: this.callWithSession.bind(session)
+      call: (endpoint: string, opts?: CallOpts) =>
+        this.callWithSession(
+          {
+            trace: [] as Response[]
+          },
+          endpoint,
+          opts
+        )
     };
   };
 }

@@ -4,9 +4,9 @@
     "noImplicitAny": true,
     "sourceMap": true,
     "module": "es6",
-    "target": "es2015",
-    "jsx": "react",
-    "allowJs": true
+    "target": "esnext",
+    "allowJs": true,
+    "esModuleInterop": true
   },
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }
