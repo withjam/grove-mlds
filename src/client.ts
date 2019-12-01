@@ -15,20 +15,38 @@ export interface CallChain {
 }
 
 interface ClientOpts {
-  host?: string;
-  port?: number;
+  host: string;
+  port: number;
   ssl?: boolean;
   apiRoot?: string;
 }
 
 export class MLDSClient {
-  opts: ClientOpts;
+  config: ClientOpts;
   constructor(opts: ClientOpts) {
-    this.opts = opts;
+    this.config = opts;
   }
 
   call = (endpoint: string, opts?: CallOpts): Promise<Response> => {
-    return fetch(endpoint);
+    const { ssl, host, port, apiRoot } = this.config;
+    const url = `http${
+      ssl ? "s" : ""
+    }://${host}:${port}${apiRoot}${endpoint}/${endpoint}.sjs`;
+    if (!opts) opts = {};
+    return fetch(url, {
+      method: "POST", // always post for data services
+      mode: "cors",
+      cache: "no-cache", // maybe make this an option?  To avoid any issues, for now, don't use cache
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: JSON.stringify(
+        opts.session
+          ? { ...opts.params, session: opts.session.raw }
+          : opts.params
+      )
+    });
   };
 
   callWithSession = (

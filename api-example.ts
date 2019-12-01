@@ -14,14 +14,11 @@ class ExampleAPIClass {
   }
 
   HelloWorld = (args: { greeting: string; frequency: number }) => {
-    const { greeting, frequency } = args;
+    //const { greeting, frequency } = args;
 
     return this.client
       .call("helloWorld/helloWorld.sjs", {
-        params: {
-          greeting,
-          frequency
-        }
+        params: args
       })
       .then(response => {
         if (!response.ok) {

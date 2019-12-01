@@ -2,7 +2,8 @@
   "name": "grove-mlds-client",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "webpack --mode production",
     "test": "jest",
@@ -13,8 +14,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^24.0.23",
+    "fetch-mock": "^8.0.0",
     "jest": "^24.9.0",
-    "jest-fetch-mock": "^2.1.2",
+    "node-fetch": "^2.6.0",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.1",
     "tsc": "^1.20150623.0",

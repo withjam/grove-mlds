@@ -1,1 +1,2 @@
-global.fetch = require("jest-fetch-mock");
+const fetchMock = require("fetch-mock");
+global.fetch = fetchMock.sandbox();
