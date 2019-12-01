@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "moduleResolution": "node",
     "module": "commonjs",
-    "lib": ["es2017", "es7", "es6", "dom"],
+    "target": "es5",
+    "lib": ["es2015", "dom"],
+    "outDir": "lib",
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
     "declaration": true,
-    "outDir": "dist",
-    "strict": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "**/*.test.ts", "dist"]
+  "files": ["./src/index.ts"],
+  "exclude": ["node_modules", "**/*.test.ts", "dist"],
+  "compileOnSave": false,
+  "buildOnSave": false
 }

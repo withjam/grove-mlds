@@ -1,3 +1,3 @@
-import * as Client from "./client";
+import { CallChain, CallOpts, MLDSClient } from "./client";
 
-export { Client };
+export { CallChain, CallOpts, MLDSClient };
