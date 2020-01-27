@@ -1,8 +1,10 @@
 const path = require("path");
 
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 var PATHS = {
   entryPoint: path.resolve(__dirname, "src/index.ts"),
-  bundles: path.resolve(__dirname, "_bundles")
+  bundles: path.resolve(__dirname, "dist/_bundles")
 };
 
 module.exports = {
@@ -33,5 +35,10 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".js"]
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/index.html"
+    })
+  ]
 };

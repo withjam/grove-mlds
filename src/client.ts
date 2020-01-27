@@ -15,10 +15,16 @@ export interface CallChain {
 }
 
 interface ClientOpts {
-  host: string;
-  port: number;
-  ssl?: boolean;
+  host?: string;
   apiRoot?: string;
+}
+
+export function encodeParams(data: Object) {
+  return Object.keys(data)
+    .map(key => {
+      return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]);
+    })
+    .join("&");
 }
 
 export class MLDSClient {
@@ -28,23 +34,22 @@ export class MLDSClient {
   }
 
   call = (endpoint: string, opts?: CallOpts): Promise<Response> => {
-    const { ssl, host, port, apiRoot } = this.config;
-    const url = `http${
-      ssl ? "s" : ""
-    }://${host}:${port}${apiRoot}${endpoint}/${endpoint}.sjs`;
+    const { host, apiRoot } = this.config;
+    const path = `${host || window.origin}${apiRoot ||
+      "/"}${endpoint}/${endpoint}.sjs`;
     if (!opts) opts = {};
-    return fetch(url, {
+    return fetch(path, {
       method: "POST", // always post for data services
       mode: "cors",
       cache: "no-cache", // maybe make this an option?  To avoid any issues, for now, don't use cache
-      credentials: "same-origin",
+      credentials: "include",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: JSON.stringify(
+      body: encodeParams(
         opts.session
           ? { ...opts.params, session: opts.session.raw }
-          : opts.params
+          : opts.params || {}
       )
     });
   };

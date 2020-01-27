@@ -1,10 +1,8 @@
-import { MLDSClient } from "./client";
+import { MLDSClient, encodeParams } from "./client";
 import fetchMock from "fetch-mock";
 
 const client = new MLDSClient({
-  host: "localhost",
-  port: 8087,
-  ssl: false,
+  host: "http://localhost:8087",
   apiRoot: "/v1/resources/"
 });
 
@@ -29,9 +27,7 @@ describe("MLDSClient", () => {
     const test_params = { greeting: "yoho", frequency: 2 };
     client.call("test", { params: test_params }).then(async data => {
       const str = await data.text();
-      expect(JSON.parse(fetchMock.lastOptions()!.body + "")).toEqual(
-        test_params
-      );
+      expect(fetchMock.lastOptions()!.body).toEqual(encodeParams(test_params));
       expect(str).toEqual("yohoyoho");
       done();
     });

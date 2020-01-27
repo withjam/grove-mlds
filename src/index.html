@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Grove MLDS Client</title>
+  </head>
+  <body>
+    <header><h1>MLDS Client Project</h1></header>
+    <main></main>
+    <script>
+      document.querySelector("main").innerHTML = "loading...";
+      const interval = setInterval(() => {
+        if (!window.GroveMLDS) {
+          return;
+        }
+        window.clearInterval(interval);
+        const client = new GroveMLDS.MLDSClient({
+          host: "//api.marklogic.local:8011"
+        });
+        client
+          .call("helloWorld", { params: { greeting: "yo", frequency: 4 } })
+          .then(resp => resp.text())
+          .then(t => {
+            document.querySelector("main").innerHTML = "<h2>" + t + "</h2>";
+          });
+      }, 100);
+    </script>
+  </body>
+</html>

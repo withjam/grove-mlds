@@ -1,4 +1,4 @@
-import { MLDSClient } from "./client";
+import { MLDSClient, encodeParams } from "./client";
 import fetchMock from "fetch-mock";
 
 const GeneratedClient = {
@@ -36,9 +36,7 @@ class GeneratedClientAPI {
 const test_url = "http://localhost:8087/v1/resources/";
 
 const client = new MLDSClient({
-  host: "localhost",
-  port: 8087,
-  ssl: false,
+  host: "http://localhost:8087",
   apiRoot: "/v1/resources/"
 });
 
@@ -56,10 +54,12 @@ describe("Generated client", () => {
       frequency
     });
     expect(str).toEqual("HiHi");
-    expect(JSON.parse(fetchMock.lastOptions()!.body + "")).toEqual({
-      greeting,
-      frequency
-    });
+    expect(fetchMock.lastOptions()!.body).toEqual(
+      encodeParams({
+        greeting,
+        frequency
+      })
+    );
     done();
   });
 });

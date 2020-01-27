@@ -1,14 +1,15 @@
 {
-  "name": "grove-mlds-client",
+  "name": "grove-mlds",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/lib-esm/index.js",
+  "types": "dist/lib-esm/index.d.ts",
   "scripts": {
-    "clean": "shx rm -rf _bundles lib lib-esm",
-    "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack --mode production",
+    "clean": "shx rm -rf dist/_bundles dist/lib-esm",
+    "build": "npm run clean && tsc && tsc -m es6 --outDir dist/lib-esm && webpack --mode production",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "dev": "webpack-dev-server --mode development --open --hot"
   },
   "keywords": [],
   "author": "",
